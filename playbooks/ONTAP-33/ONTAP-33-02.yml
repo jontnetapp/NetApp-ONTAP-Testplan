@@ -15,7 +15,7 @@
 ################################################################################
 
 - hosts:                               "primary_storage_clusters"
-  name:                                "ONTAP-33-01 - Create S3 User and Group"
+  name:                                "ONTAP-33-02 - Create S3 Bucket"
   gather_facts:                        false
   vars_files:
     - ../../vars/{{ inventory_dir | split('/') | last }}/vars.yml
@@ -40,6 +40,8 @@
         name: foo-test-bucket
         size: 100*1024*1024*1024
         vserver: "{{ item.name }}"
+      loop:
+        "{{ svm_svms }}"
       loop_control:
         label: "{{ item.name }}"
       when:
