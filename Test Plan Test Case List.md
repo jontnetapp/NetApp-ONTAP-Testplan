@@ -36,6 +36,8 @@
 | 32-04 | CIFS	                            | FlexGroup & qtrees                    |
 | 32-05 | CIFS	                            | Shares & ACLs (FlexGroup)             |
 | 32-06 | CIFS	                            | Mount & Write (FlexGroup)             |
+| 33-01 | S3                                | User and Group                        |
+| 33-02 | S3                                | Bucket                                |
 | 35-01 | iSCSI	                            | iGroups                               |
 | 35-02 | iSCSI	                            | Volumes                               |
 | 35-03 | iSCSI	                            | LUNs & Mappings                       |
