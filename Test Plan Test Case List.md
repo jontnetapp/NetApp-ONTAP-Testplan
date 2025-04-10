@@ -24,6 +24,7 @@
 | 20-02 | Basic Data SVM Setup	            | SVM network interfaces (LIFs)         |
 | 20-03 | Basic Data SVM Setup	            | SVM Network Services                  |
 | 20-04 | Basic Data SVM Setup	            | SVM Protocol Setup                    |
+| 20-05 | Basic Data SVM Setup	            | SVM Certificates and S3 Setup         |
 | 31-01 | NFS	                            | Export Policies & Rules               |
 | 31-02 | NFS	                            | Volumes & Qtrees                      |
 | 31-03 | NFS	                            | Mount & Write (Volumes)               |
