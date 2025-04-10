@@ -1,0 +1,75 @@
+################################################################################
+#
+# Title:        ONTAP-33-01 - Create S3 User and Group
+# Author:       NetApp Inc. (jont)
+# Initial
+# Create Date:  2025-04-10
+# Description:  Create an S3 User and Group
+#
+# URLs:         https://docs.netapp.com/us-en/ontap/index.html
+#               https://galaxy.ansible.com/netapp/ontap
+#
+# Built-in help:
+# ansible-doc netapp.ontap.<module_name>
+#
+################################################################################
+
+- hosts:                               "primary_storage_clusters"
+  name:                                "ONTAP-33-01 - Create S3 User and Group"
+  gather_facts:                        false
+  vars_files:
+    - ../../vars/{{ inventory_dir | split('/') | last }}/vars.yml
+    - ../../vars/{{ inventory_dir | split('/') | last }}/vault.yml
+  collections:
+    - netapp.ontap
+  module_defaults:
+    group/netapp.ontap.netapp_ontap:
+      hostname:                        "{{ ansible_host }}"
+      username:                        "{{ ontap_admin_user }}"
+      password:                        "{{ ontap_admin_password }}"
+      https:                           true
+      validate_certs:                  false
+      use_rest:                        "always"
+
+  pre_tasks:
+
+  tasks:
+    - name: Create or regenerate the foo S3 user
+      netapp.ontap.na_ontap_s3_users:
+        state: present
+        name: foo
+        vserver: "{{ item.name }}"
+        regenerate_keys: true
+      loop:
+       "{{ svm_svms }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when:
+        - svm_svms | length > 0
+        - item.name is defined
+        - item.name is regex('^ntap-svm.*')
+      register: s3_user
+
+    - name: Debug information about the S3 user
+      debug:
+        var: s3_user
+
+    - name: Create the foo-group S3 Group
+      netapp.ontap.na_ontap_s3_groups:
+        state: present
+        name: foo-group
+        vserver: "{{ item.name }}"
+        users:
+          - name: "foo"
+        policies:
+          - name: "FullAccess"
+      loop:
+       "{{ svm_svms }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when:
+        - svm_svms | length > 0
+        - item.name is defined
+        - item.name is regex('^ntap-svm.*')
+
+  post_tasks:
