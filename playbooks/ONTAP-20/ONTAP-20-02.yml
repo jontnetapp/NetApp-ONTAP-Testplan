@@ -35,6 +35,29 @@
   pre_tasks:
 
   tasks:
+      - name: Create S3 network service policy
+      netapp.ontap.na_ontap_service_policy:
+        name: "custom-data-s3"
+        services:
+          - data_core
+          - data_cifs
+          - data_fpolicy_client
+          - management_dns_client
+          - management_ad_client
+          - management_ldap_client
+          - management_nis_client
+          - data_dns_server
+          - data_s3_server
+        vserver: "{{ item.name}}"
+      loop:
+        "{{ svm_svms }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when:
+        - svm_svms | length > 0
+        - item.name is defined
+        - item.name is regex('^ntap-svm.*')
+
     - name: Create network interfaces on test SVMs
       netapp.ontap.na_ontap_interface:
         state:                         present
