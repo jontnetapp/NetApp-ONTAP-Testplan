@@ -381,7 +381,7 @@ network_ip_interfaces:
         name:                     "e0c"
       auto_revert:                true
     service_policy:
-      name:                       "default-data-files"
+      name:                       "custom-data-s3"
   - name:                         "{{ svm_svms[2].name }}"
     scope:                        "svm"
     svm:
