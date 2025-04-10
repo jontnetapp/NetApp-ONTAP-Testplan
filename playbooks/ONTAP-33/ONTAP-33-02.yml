@@ -1,0 +1,51 @@
+################################################################################
+#
+# Title:        ONTAP-33-02 - Create S3 Bucket
+# Author:       NetApp Inc. (jont)
+# Initial
+# Create Date:  2025-04-10
+# Description:  Create an S3 Bucket
+#
+# URLs:         https://docs.netapp.com/us-en/ontap/index.html
+#               https://galaxy.ansible.com/netapp/ontap
+#
+# Built-in help:
+# ansible-doc netapp.ontap.<module_name>
+#
+################################################################################
+
+- hosts:                               "primary_storage_clusters"
+  name:                                "ONTAP-33-01 - Create S3 User and Group"
+  gather_facts:                        false
+  vars_files:
+    - ../../vars/{{ inventory_dir | split('/') | last }}/vars.yml
+    - ../../vars/{{ inventory_dir | split('/') | last }}/vault.yml
+  collections:
+    - netapp.ontap
+  module_defaults:
+    group/netapp.ontap.netapp_ontap:
+      hostname:                        "{{ ansible_host }}"
+      username:                        "{{ ontap_admin_user }}"
+      password:                        "{{ ontap_admin_password }}"
+      https:                           true
+      validate_certs:                  false
+      use_rest:                        "always"
+
+  pre_tasks:
+
+  tasks:
+    - name: Create S3 buckets
+      netapp.ontap.na_ontap_s3_buckets:
+        state: present
+        name: foo-test-bucket
+        size: 100*1024*1024*1024
+        vserver: "{{ item.name }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when:
+        - svm_svms | length > 0
+        - item.name is defined
+        - item.name is regex('^ntap-svm.*')
+
+  post_tasks:
+  
