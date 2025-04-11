@@ -53,17 +53,17 @@
     - name: Configure S3 service
       netapp.ontap.na_ontap_s3_services:
         state:                         present
-        vserver:                       "{{ item.name }}"
+        vserver:                       "{{ item.svm.name }}"
         name:                          "{{ item.name }}"
         enabled:                       true
-        certificate_name:              "{{ item.name }}"
+        certificate_name:              "{{ item.certificate.name }}"
       loop:
-       "{{ svm_svms }}"
+       "{{ protocols_s3_services }}"
       loop_control:
         label: "{{ item.name }}"
       when:
-        - svm_svms | length > 0
+        - protocols_s3_services | length > 0
         - item.name is defined
-        - item.name is regex('^ntap-svm.*')
+        - item.svm.name is regex('^ntap-svm.*')
 
   post_tasks:
