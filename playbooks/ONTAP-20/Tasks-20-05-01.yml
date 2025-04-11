@@ -17,7 +17,6 @@
 # ansible-doc netapp.ontap.<module_name>
 #
 ################################################################################
-
 ---
 - name: Create root-ca certificate on {{ item.name }}
   netapp.ontap.na_ontap_security_certificates:
@@ -94,18 +93,4 @@
       svm.name: "{{ item.name }}"
       type: "server"
   register: server_result
-
-- name: Store Server Certificate Names
-  set_fact:
-    ontap_cert_server_name: "{{ server_result.response.records[0].name }}"
-  when:
-    - server_result.response is defined
-    - server_result.response.records[0].name is defined
-
-- name: Configure S3 service
-  netapp.ontap.na_ontap_s3_services:
-    state:                         present
-    vserver:                       "{{ item.name }}"
-    name:                          "{{ item.name }}"
-    enabled:                       true
-    certificate_name:              "{{ ontap_cert_server_name }}"
+  

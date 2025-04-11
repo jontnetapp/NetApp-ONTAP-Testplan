@@ -19,7 +19,7 @@
 #
 ################################################################################
 
-- hosts:                               "primary_storage_clusters"
+- hosts:                               "ontap"
   name:                                "ONTAP-20-05 - Create Certificates and S3 Service"
   gather_facts:                        false
   vars_files:
@@ -40,7 +40,7 @@
 
   tasks:
     - name: Create SVM self-signed certificates
-      include_tasks: Tasks-20-05.yml
+      include_tasks: Tasks-20-05-01.yml
       loop:
        "{{ svm_svms }}"
       loop_control:
@@ -50,13 +50,8 @@
         - item.name is defined
         - item.name is regex('^ntap-svm.*')
 
-    - name: Configure S3 service
-      netapp.ontap.na_ontap_s3_services:
-        state:                         present
-        vserver:                       "{{ item.svm.name }}"
-        name:                          "{{ item.name }}"
-        enabled:                       true
-        certificate_name:              "{{ item.certificate.name }}"
+    - name: Create S3 Servers
+      include_tasks: Tasks-20-05-02.yml
       loop:
        "{{ protocols_s3_services }}"
       loop_control:

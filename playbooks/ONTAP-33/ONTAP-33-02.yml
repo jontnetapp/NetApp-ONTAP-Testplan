@@ -37,17 +37,17 @@
     - name: Create S3 buckets
       netapp.ontap.na_ontap_s3_buckets:
         state: present
-        name: foo-test-bucket
-        size: 107374182400
-        vserver: "{{ item.name }}"
+        name: "{{ ontap_33_s3_bucket_name }}"
+        size: "{{ ontap_33_s3_bucket_size }}"
+        vserver: "{{ item.svm.name }}"
       loop:
-        "{{ svm_svms }}"
+        "{{ protocols_s3_services }}"
       loop_control:
-        label: "{{ item.name }}"
+        label: "{{ item.svm.name }}"
       when:
-        - svm_svms | length > 0
+        - protocols_s3_services | length > 0
         - item.name is defined
-        - item.name is regex('^ntap-svm.*')
+        - item.svm.name is regex('^ntap-svm.*')
 
   post_tasks:
   
