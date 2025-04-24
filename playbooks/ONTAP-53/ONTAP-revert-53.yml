@@ -16,7 +16,7 @@
 
 
 - hosts:                               "primary_storage_clusters"
-  name:                                "ONTAP-revert-53 - Backup (SnapMirror S3) - ONTAP Secondary"
+  name:                                "ONTAP-revert-53 - Backup (SnapMirror S3)"
   gather_facts:                        false
   vars_files:
     - ../../vars/{{ inventory_dir | split('/') | last }}/vars.yml
