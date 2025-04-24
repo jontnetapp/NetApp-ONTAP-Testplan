@@ -204,6 +204,16 @@
       type: server_ca
       svm: "{{ global_primary_nas_svm }}"
 
+  - name: Create SnapMirror custom policy
+    netapp.ontap.na_ontap_rest_cli:
+      command: snapmirror/policy
+      verb: POST
+      body:
+        vserver: "{{ global_primary_nas_svm }}"
+        policy: "{{ ontap_53_policy_name }}"
+        type: "continuous"
+        rpo: 0
+      
   - name: Create SnapMirror S3 relationship
     netapp.ontap.na_ontap_rest_cli:
       command: snapmirror
