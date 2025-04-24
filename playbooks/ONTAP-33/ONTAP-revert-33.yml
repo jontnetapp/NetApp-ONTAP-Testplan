@@ -15,7 +15,7 @@
 ################################################################################
 
 
-- hosts:                               "primary_storage_clusters"
+- hosts:                               "ontap"
   name:                                "ONTAP-revert-33 - S3"
   gather_facts:                        false
   vars_files:
@@ -50,4 +50,36 @@
         - item.name is defined
         - item.svm.name is regex('^ntap-svm.*')
 
+    - name: Remove S3 users
+      netapp.ontap.na_ontap_s3_users:
+        state: absent
+        name: "{{ ontap_33_s3_user_name }}"
+        vserver: "{{ item.svm.name }}"
+      loop:
+       "{{ protocols_s3_services }}"
+      loop_control:
+        label: "{{ item.svm.name }}"
+      when:
+        - protocols_s3_services | length > 0
+        - item.name is defined
+        - item.svm.name is regex('^ntap-svm.*')
+
+    - name: Remove S3 groups
+      netapp.ontap.na_ontap_s3_groups:
+        state: absent
+        name: "{{ ontap_33_s3_group_name }}"
+        vserver: "{{ item.svm.name }}"
+        users:
+          - name: "{{ ontap_33_s3_user_name }}"
+        policies:
+          - name: "{{ ontap_33_s3_group_policy }}"
+      loop:
+       "{{ protocols_s3_services }}"
+      loop_control:
+        label: "{{ item.svm.name }}"
+      when:
+        - protocols_s3_services | length > 0
+        - item.name is defined
+        - item.svm.name is regex('^ntap-svm.*')
+        
   post_tasks:
