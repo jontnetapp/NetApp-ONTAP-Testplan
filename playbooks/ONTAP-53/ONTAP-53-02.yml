@@ -50,19 +50,6 @@
         - item.name is defined
         - item.svm.name is regex('^ntap-svm.*')
 
-    - name: Remove any preexisting snapmirror object store configuration on the SVM
-      netapp.ontap.na_ontap_rest_cli:
-        command: snapmirror/object-store/config
-        verb: DELETE
-        params:
-          vserver: "{{ item.svm.name }}"
-          object-store-name: "*"
-      ignore_errors: yes
-      loop:
-         "{{ protocols_s3_services }}"
-      loop_control:
-        label: "{{ item.svm.name }}"
-
   post_tasks:
 
 - hosts: "primary_storage_clusters"
