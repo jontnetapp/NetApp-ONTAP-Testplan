@@ -212,7 +212,7 @@
         vserver: "{{ global_primary_nas_svm }}"
         policy: "{{ ontap_53_policy_name }}"
         type: "continuous"
-        rpo: 0
+        rpo: "{{ ontap_53_policy_rpo }}"
       
   - name: Create SnapMirror S3 relationship
     netapp.ontap.na_ontap_rest_cli:
