@@ -75,9 +75,9 @@ ontap_33_s3_bucket_size:          107374182400
 ontap_34_fg_name:                 "ontap_34_fg01"
 ontap_34_fg_unix_qtree_names:
   - "ontap_34_fg_unix_qt01"
-  ontap_34_fg_ntfs_qtree_names:
+ontap_34_fg_ntfs_qtree_names:
   - "ontap_34_fg_ntfs_qt01"
-  ontap_34_fg_mixed_qtree_names:
+ontap_34_fg_mixed_qtree_names:
   - "ontap_34_fg_mixed_qt01"
 ontap_34_policy_name:             "ontap_34_policy"
 linux_34_mount_dir:               "{{ linux_default_mount_dir }}/34"
