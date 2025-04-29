@@ -34,6 +34,25 @@
   pre_tasks:
 
   tasks:
+
+    - name: Create read-write export policy
+      netapp.ontap.na_ontap_export_policy:
+        state:                         present
+        name:                          "{{ ontap_34_policy_name }}"
+        vserver:                       "{{ global_primary_nas_svm }}"
+  
+    - name: Create read-write export policy rules for FlexGroup
+      netapp.ontap.na_ontap_export_policy_rule:
+        state:                         present
+        name:                          "{{ ontap_34_policy_name }}"
+        vserver:                       "{{ global_primary_nas_svm }}"
+        client_match:                  "{{ groups['linux'] | map('extract', hostvars, ['ansible_host']) }}"
+        ro_rule:                       "any"
+        rw_rule:                       "any"
+        protocol:                      "nfs"
+        super_user_security:           "any"
+        allow_suid:                    true
+        
     - name: Create FlexGroup
       netapp.ontap.na_ontap_volume:
         state:                         present
@@ -46,8 +65,8 @@
         space_guarantee:               "none"
         tiering_policy:                "auto"
         granular_data:                 "advanced"
-        export_policy:                 "{{ ontap_31_policy_name }}"
-        junction_path:                 "/{{ ontap_31_fg_name }}"
+        export_policy:                 "{{ ontap_34_policy_name }}"
+        junction_path:                 "/{{ ontap_34_fg_name }}"
         vserver:                       "{{ global_primary_nas_svm }}"
         wait_for_completion:           True
   
