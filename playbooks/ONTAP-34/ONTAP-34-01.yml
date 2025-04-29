@@ -1,10 +1,10 @@
 ################################################################################
 #
-# Title:        ONTAP-34-01 - Create S3 NAS Buckets
+# Title:        ONTAP-34-01 - Create MultiProtocol NAS/S3 FlexGroup
 # Author:       NetApp Inc. (jont)
 # Initial
 # Create Date:  2025-04-28
-# Description:  Create S3 Buckets on top of NAS volumes
+# Description:  Create NAS FlexGroup and Multiprotocol Qtrees
 #
 # URLs:         https://docs.netapp.com/us-en/ontap/index.html
 #               https://galaxy.ansible.com/netapp/ontap
@@ -15,7 +15,7 @@
 ################################################################################
 
 - hosts:                               "primary_storage_clusters"
-  name:                                "ONTAP-34-01 - Create S3 NAS Buckets"
+  name:                                "ONTAP-34-01 - FlexGroup & Qtrees"
   gather_facts:                        false
   vars_files:
     - ../../vars/{{ inventory_dir | split('/') | last }}/vars.yml
@@ -34,36 +34,52 @@
   pre_tasks:
 
   tasks:
+    - name: Create FlexGroup
+      netapp.ontap.na_ontap_volume:
+        state:                         present
+        name:                          "{{ ontap_34_fg_name }}"
+        size:                          "{{ ontap_default_fg_size_gb }}"
+        volume_security_style:         "unix"
+        aggr_list:                     "{{ storage_aggregates | map(attribute='name') | flatten }}"
+        aggr_list_multiplier:          "{{ ontap_default_fg_multiplier }}"
+        size_unit:                     gb
+        space_guarantee:               "none"
+        tiering_policy:                "auto"
+        export_policy:                 "{{ ontap_31_policy_name }}"
+        junction_path:                 "/{{ ontap_31_fg_name }}"
+        vserver:                       "{{ global_primary_nas_svm }}"
+        wait_for_completion:           True
+  
+    - name: Create UNIX qtrees
+      netapp.ontap.na_ontap_qtree:
+        state:                         present
+        name:                          "{{ item }}"
+        flexvol_name:                  "{{ ontap_34_fg_name }}"
+        export_policy:                 "{{ ontap_34_policy_name }}"
+        security_style:                "unix"
+        unix_permissions:              0777
+        vserver:                       "{{ global_primary_nas_svm }}"
+      loop:
+        "{{ ontap_34_fg_unix_qtree_names }}"
 
-    - name: Create S3-NFS bucket
-      netapp.ontap.na_ontap_s3_buckets:
-        state: present
-        name: "nfsvol"
-        type: nas
-        nas_path: "/{{ ontap_31_vol_name }}"
-        vserver: "{{ global_primary_nas_svm }}"
+    - name: Create NTFS qtrees
+      netapp.ontap.na_ontap_qtree:
+        state:                         present
+        name:                          "{{ item }}"
+        flexvol_name:                  "{{ ontap_34_fg_name }}"
+        security_style:                "ntfs"
+        vserver:                       "{{ global_primary_nas_svm }}"
+      loop:
+        "{{ ontap_34_fg_ntfs_qtree_names }}"
 
-    - name: Create S3-UNIX name mapping configuration
-      netapp.ontap.na_ontap_name_mappings:
-        direction: s3_unix
-        index: 1
-        pattern: "{{ ontap_33_s3_user_name }}"
-        replacement: "root"
-        vserver: "{{ global_primary_nas_svm }}"
+    - name: Create Mixed qtrees
+      netapp.ontap.na_ontap_qtree:
+        state:                         present
+        name:                          "{{ item }}"
+        flexvol_name:                  "{{ ontap_34_fg_name }}"
+        security_style:                "mixed"
+        vserver:                       "{{ global_primary_nas_svm }}"
+      loop:
+        "{{ ontap_34_fg_mixed_qtree_names }}"
 
-    - name: Create S3-SMB bucket
-      netapp.ontap.na_ontap_s3_buckets:
-        state: present
-        name: "winvol"
-        type: nas
-        nas_path: "/{{ ontap_32_vol_name }}"
-        vserver: "{{ global_primary_nas_svm }}"
-
-    - name: Create S3-SMB name mapping configuration
-      netapp.ontap.na_ontap_name_mappings:
-        direction: s3_win
-        index: 2
-        pattern: "{{ ontap_33_s3_user_name }}"
-        ### TODO - mapping not working properly
-        replacement: "DEMO\\Administrator"
-        vserver: "{{ global_primary_nas_svm }}"
+  post_tasks:
