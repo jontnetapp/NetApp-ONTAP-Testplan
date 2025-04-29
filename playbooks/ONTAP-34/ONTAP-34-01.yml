@@ -53,7 +53,7 @@
         super_user_security:           "any"
         allow_suid:                    true
         
-    - name: Create FlexGroup
+    - name: Create FlexGroup with advanced granular data support
       netapp.ontap.na_ontap_volume:
         state:                         present
         name:                          "{{ ontap_34_fg_name }}"
@@ -64,7 +64,7 @@
         size_unit:                     gb
         space_guarantee:               "none"
         tiering_policy:                "auto"
-        granular_data:                 "advanced"
+        granular_data:                 True
         export_policy:                 "{{ ontap_34_policy_name }}"
         junction_path:                 "/{{ ontap_34_fg_name }}"
         vserver:                       "{{ global_primary_nas_svm }}"
