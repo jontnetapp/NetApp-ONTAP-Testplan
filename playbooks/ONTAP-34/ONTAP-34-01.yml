@@ -45,6 +45,7 @@
         size_unit:                     gb
         space_guarantee:               "none"
         tiering_policy:                "auto"
+        granular_data:                 "advanced"
         export_policy:                 "{{ ontap_31_policy_name }}"
         junction_path:                 "/{{ ontap_31_fg_name }}"
         vserver:                       "{{ global_primary_nas_svm }}"
