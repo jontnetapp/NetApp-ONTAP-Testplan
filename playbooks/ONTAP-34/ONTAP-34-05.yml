@@ -1,6 +1,6 @@
 ################################################################################
 #
-# Title:        ONTAP-34-04 - Create MultiProtocol NAS/S3 FlexGroup
+# Title:        ONTAP-34-05 - Create S3 user, group, and NAS bucket
 # Author:       NetApp Inc. (jont)
 # Initial
 # Create Date:  2025-04-28
@@ -15,7 +15,7 @@
 ################################################################################
 
 - hosts:                               "primary_storage_clusters"
-  name:                                "ONTAP-34-04 - Create S3 NAS Buckets"
+  name:                                "ONTAP-34-05 - Create S3 user, group, and NAS bucket"
   gather_facts:                        false
   vars_files:
     - ../../vars/{{ inventory_dir | split('/') | last }}/vars.yml
