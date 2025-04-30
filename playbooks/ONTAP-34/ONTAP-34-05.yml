@@ -80,7 +80,7 @@
         replacement: "{{ admin_user }}"
         vserver: "{{ global_primary_nas_svm }}"
 
-      - name: Create S3 NAS bucket
+    - name: Create S3 NAS bucket
       netapp.ontap.na_ontap_s3_buckets:
         state: present
         name: "{{ ontap_34_bucket_name }}"
