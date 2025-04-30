@@ -118,7 +118,7 @@
 
         - name: Create test file on each share
           ansible.windows.win_file:
-            path:                      "\\\\{{ global_primary_nas_svm }}\\{{ item }}\\{{ item }}_testfile"
+            path:                      "\\\\{{ global_primary_nas_svm }}\\{{ item }}\\{{ item }}_testfile_smb"
             state:                     touch
           loop:
             "{{ ontap_34_fg_unix_qtree_names + ontap_34_fg_ntfs_qtree_names + ontap_34_fg_mixed_qtree_names }}"
