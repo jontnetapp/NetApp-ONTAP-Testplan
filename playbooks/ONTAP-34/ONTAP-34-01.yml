@@ -76,8 +76,7 @@
         method:                        GET
         query:
          name:                         "{{ ontap_34_fg_name }}"
-         svm:
-           name:                       "{{ global_primary_nas_svm }}"        
+         svm.name:                     "{{ global_primary_nas_svm }}"        
       register: flexgroup_info
       
     - name: Modify FlexGroup to activate advanced granular data support      
