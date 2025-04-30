@@ -41,7 +41,7 @@
         type: nas
         nas_path: "/{{ ontap_31_vol_name }}"
         vserver: "{{ global_primary_nas_svm }}"
-
+        
     - name: Create S3-UNIX name mapping configuration
       netapp.ontap.na_ontap_name_mappings:
         direction: s3_unix
@@ -58,13 +58,19 @@
         nas_path: "/{{ ontap_32_vol_name }}"
         vserver: "{{ global_primary_nas_svm }}"
 
+    - set_fact: 
+        admin_user: "{{ ontap_34_ad_admin_user | replace(match, replace) }}"
+      vars:
+        match: '\'
+        replace: '\\'
+        
     - name: Create S3-SMB name mapping configuration
       netapp.ontap.na_ontap_name_mappings:
         direction: s3_win
         index: 2
         pattern: "{{ ontap_33_s3_user_name }}"
         ### TODO - mapping not working properly
-        replacement: "DEMO\\Administrator"
+        replacement: "{{ admin_user }}"
         vserver: "{{ global_primary_nas_svm }}"
   
   post_tasks:
