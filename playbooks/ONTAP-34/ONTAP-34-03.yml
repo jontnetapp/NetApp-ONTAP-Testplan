@@ -53,7 +53,7 @@
   
     - name: Create test file on each export
       community.general.filesize:
-        path: "{{ linux_34_mount_dir }}/{{ item }}/{{ item }}_testfile"
+        path: "{{ linux_34_mount_dir }}/{{ item }}/{{ item }}_testfile_nfs"
         size: 50MB
       loop:
         "{{ ontap_34_fg_unix_qtree_names + ontap_34_fg_ntfs_qtree_names + ontap_34_fg_mixed_qtree_names }}"
