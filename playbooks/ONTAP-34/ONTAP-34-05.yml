@@ -34,6 +34,29 @@
   pre_tasks:
 
   tasks:
+
+  - name: Create or regenerate the S3 user
+    netapp.ontap.na_ontap_s3_users:
+      state: present
+      name: "{{ ontap_34_s3_user_name }}"
+      vserver: "{{ item.svm.name }}"
+      regenerate_keys: true
+    register: s3_user
+
+  - name: Create S3 groups
+    netapp.ontap.na_ontap_s3_groups:
+      state: present
+      name: "{{ ontap_34_s3_group_name }}"
+      vserver: "{{ global_primary_nas_svm }}"
+      users:
+        - name: "{{ ontap_34_s3_user_name }}"
+      policies:
+        - name: "{{ ontap_34_s3_group_policy }}"
+
+  - name: Debug information about the S3 user
+    debug:
+      var: s3_user
+      
     - name: Create S3 NAS bucket
       netapp.ontap.na_ontap_s3_buckets:
         state: present
