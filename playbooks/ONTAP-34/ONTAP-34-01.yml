@@ -53,7 +53,7 @@
         super_user_security:           "any"
         allow_suid:                    true
         
-    - name: Create FlexGroup with advanced granular data support
+    - name: Create FlexGroup           
       netapp.ontap.na_ontap_volume:
         state:                         present
         name:                          "{{ ontap_34_fg_name }}"
@@ -64,12 +64,31 @@
         size_unit:                     gb
         space_guarantee:               "none"
         tiering_policy:                "auto"
-        granular_data:                 True
+        granular_data:                 True #### Results in Basic mode ####
         export_policy:                 "{{ ontap_34_policy_name }}"
         junction_path:                 "/{{ ontap_34_fg_name }}"
         vserver:                       "{{ global_primary_nas_svm }}"
         wait_for_completion:           True
-  
+
+    - name: Get FlexGroup UUID
+      netapp.ontap.na_ontap_restit:
+        api:                           /storage/volumes
+        method:                        GET
+        query:
+         name:                         "{{ ontap_34_fg_name }}"
+         svm:
+           name:                       "{{ global_primary_nas_svm }}"        
+      register: flexgroup_info
+      
+    - name: Modify FlexGroup to activate advanced granular data support      
+      netapp.ontap.na_ontap_restit:
+        api:                           /storage/volumes/{{ flexgroup_info.response.records[0].uuid }}
+        method:                        PATCH
+        body:
+         granular_data:                True
+         granular_data_mode:           "advanced"
+
+
     - name: Create UNIX qtrees
       netapp.ontap.na_ontap_qtree:
         state:                         present
