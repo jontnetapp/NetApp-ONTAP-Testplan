@@ -1,6 +1,6 @@
 ################################################################################
 #
-# Title:        ONTAP-34-02 - Create Name Mappings
+# Title:        ONTAP-34-02 - Create NFS-SMB Name Mappings
 # Author:       NetApp Inc. (jont)
 # Initial
 # Create Date:  2025-04-28
@@ -15,7 +15,7 @@
 ################################################################################
 
 - hosts:                               "primary_storage_clusters"
-  name:                                "ONTAP-34-04 - Create S3 NAS Buckets"
+  name:                                "ONTAP-34-02 - Create NFS-SMB Name Mappings"
   gather_facts:                        false
   vars_files:
     - ../../vars/{{ inventory_dir | split('/') | last }}/vars.yml
@@ -34,12 +34,17 @@
   pre_tasks:
 
   tasks:
-  
+    - set_fact: 
+        admin_user: "{{ ontap_34_ad_admin_user | replace(match, replace) }}"
+      vars:
+        match: '\'
+        replace: '\\'
+
     - name: Create Windows admin user -> UNIX root name mapping configuration
       netapp.ontap.na_ontap_name_mappings:
         direction:                     win_unix
         index:                         1
-        pattern:                       "{{ ontap_34_ad_admin_user }}"
+        pattern:                       "{{ admin_user }}"
         replacement:                   "root"
         vserver:                       "{{ global_primary_nas_svm }}"
 
@@ -48,7 +53,7 @@
         direction:                     unix_win
         index:                         1
         pattern:                       "root"
-        replacement:                   "{{ ontap_34_ad_admin_user }}"
+        replacement:                   "{{ admin_user }}"
         vserver:                       "{{ global_primary_nas_svm }}"
         
   post_tasks:
