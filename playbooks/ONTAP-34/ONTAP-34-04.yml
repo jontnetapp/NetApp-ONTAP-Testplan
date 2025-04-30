@@ -46,7 +46,7 @@
         show_snapshot:                 true
         comment:                       "Test share created as part of test frame ONTAP-34"
       loop:
-        "{{ ontap_34_fg_ntfs_qtree_names + ontap_34_fg_ntfs_qtree_names + ontap_34_fg_mixed_qtree_names}}"
+        "{{ ontap_34_fg_unix_qtree_names + ontap_34_fg_ntfs_qtree_names + ontap_34_fg_mixed_qtree_names}}"
 
     - name: Remove "Full Control" for "Everyone"
       netapp.ontap.na_ontap_cifs_acl:
@@ -56,7 +56,7 @@
         user_or_group:                 "Everyone"
         permission:                    "full_control"
       loop:
-        "{{ ontap_34_fg_ntfs_qtree_names + ontap_34_fg_ntfs_qtree_names + ontap_34_fg_mixed_qtree_names}}"
+        "{{ ontap_34_fg_unix_qtree_names + ontap_34_fg_ntfs_qtree_names + ontap_34_fg_mixed_qtree_names}}"
 
     - name: Create ACL on test share (admins - Full Control)
       netapp.ontap.na_ontap_cifs_acl:
@@ -66,7 +66,7 @@
         user_or_group:                 "{{ ontap_34_ad_admin_group }}"
         permission:                    "full_control"
       loop:
-        "{{ ontap_34_fg_ntfs_qtree_names + ontap_34_fg_ntfs_qtree_names + ontap_34_fg_mixed_qtree_names}}"
+        "{{ ontap_34_fg_unix_qtree_names + ontap_34_fg_ntfs_qtree_names + ontap_34_fg_mixed_qtree_names}}"
 
     - name: Create ACL on test share (read-only users - Read)
       netapp.ontap.na_ontap_cifs_acl:
@@ -76,7 +76,7 @@
         user_or_group:                 "{{ ontap_34_ad_ro_group }}"
         permission:                    "read"
       loop:
-        "{{ ontap_34_fg_ntfs_qtree_names + ontap_34_fg_ntfs_qtree_names + ontap_34_fg_mixed_qtree_names}}"
+        "{{ ontap_34_fg_unix_qtree_names + ontap_34_fg_ntfs_qtree_names + ontap_34_fg_mixed_qtree_names}}"
 
   post_tasks:
   
@@ -114,14 +114,14 @@
             src:                       "\\\\{{ global_primary_nas_svm }}\\{{ item }}"
             dest:                      "{{ windows_34_mount_dir }}\\{{ item }}.lnk"
           loop:
-            "{{ ontap_34_fg_ntfs_qtree_names + ontap_34_fg_ntfs_qtree_names + ontap_34_fg_mixed_qtree_names }}"
+            "{{ ontap_34_fg_unix_qtree_names + ontap_34_fg_ntfs_qtree_names + ontap_34_fg_mixed_qtree_names }}"
 
         - name: Create test file on each share
           ansible.windows.win_file:
             path:                      "\\\\{{ global_primary_nas_svm }}\\{{ item }}\\{{ item }}_testfile"
             state:                     touch
           loop:
-            "{{ ontap_34_fg_ntfs_qtree_names + ontap_34_fg_ntfs_qtree_names + ontap_34_fg_mixed_qtree_names }}"
+            "{{ ontap_34_fg_unix_qtree_names + ontap_34_fg_ntfs_qtree_names + ontap_34_fg_mixed_qtree_names }}"
       vars:
         # become is required to save and retrieve the credentials in the tasks
         ansible_become:                "yes"
