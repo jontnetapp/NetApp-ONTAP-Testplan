@@ -39,6 +39,8 @@
       netapp.ontap.na_ontap_s3_buckets:
         state: absent
         name: "{{ ontap_34_s3_bucket_name }}"
+        type: nas
+        nas_path: "/{{ ontap_34_fg_name }}"
         vserver: "{{ global_primary_nas_svm }}"
 
     - name: Remove S3 users
