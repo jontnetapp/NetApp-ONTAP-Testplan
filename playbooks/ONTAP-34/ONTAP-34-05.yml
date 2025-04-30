@@ -31,6 +31,9 @@
       validate_certs:                  false
       use_rest:                        "always"
 
+  pre_tasks:
+
+  tasks:
     - name: Create S3-NFS bucket
       netapp.ontap.na_ontap_s3_buckets:
         state: present
@@ -63,3 +66,5 @@
         ### TODO - mapping not working properly
         replacement: "DEMO\\Administrator"
         vserver: "{{ global_primary_nas_svm }}"
+  
+  post_tasks:
