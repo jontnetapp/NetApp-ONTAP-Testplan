@@ -23,6 +23,7 @@
     - ../../vars/{{ inventory_dir | split('/') | last }}/vault.yml
   collections:
     - netapp.ontap
+    - community.windows
   module_defaults:
     group/netapp.ontap.netapp_ontap:
       hostname:                        "{{ ansible_host }}"
