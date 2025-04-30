@@ -39,10 +39,14 @@
       netapp.ontap.na_ontap_s3_users:
         state: present
         name: "{{ ontap_34_s3_user_name }}"
-        vserver: "{{ item.svm.name }}"
+        vserver: "{{ global_primary_nas_svm }}"
         regenerate_keys: true
       register: s3_user
   
+    - name: Debug information about the S3 user
+      debug:
+        var: s3_user
+        
     - name: Create S3 groups
       netapp.ontap.na_ontap_s3_groups:
         state: present
@@ -52,18 +56,6 @@
           - name: "{{ ontap_34_s3_user_name }}"
         policies:
           - name: "{{ ontap_34_s3_group_policy }}"
-  
-    - name: Debug information about the S3 user
-      debug:
-        var: s3_user
-        
-    - name: Create S3 NAS bucket
-      netapp.ontap.na_ontap_s3_buckets:
-        state: present
-        name: "{{ ontap_34_bucket_name }}"
-        type: nas
-        nas_path: "/{{ ontap_34_fg_name }}"
-        vserver: "{{ global_primary_nas_svm }}"
         
     - name: Create S3-UNIX name mapping configuration
       netapp.ontap.na_ontap_name_mappings:
@@ -87,5 +79,13 @@
         ### TODO - mapping not working properly
         replacement: "{{ admin_user }}"
         vserver: "{{ global_primary_nas_svm }}"
-  
+
+      - name: Create S3 NAS bucket
+      netapp.ontap.na_ontap_s3_buckets:
+        state: present
+        name: "{{ ontap_34_bucket_name }}"
+        type: nas
+        nas_path: "/{{ ontap_34_fg_name }}"
+        vserver: "{{ global_primary_nas_svm }}"
+
   post_tasks:
