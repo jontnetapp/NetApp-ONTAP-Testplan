@@ -81,7 +81,7 @@
   post_tasks:
   
 - hosts:                               "windows_hosts"
-  name:                                "ONTAP-32-06 - Mount & Write (FlexGroup)"
+  name:                                "ONTAP-34-04 - Mount & Write (FlexGroup)"
   gather_facts:                        false
   vars_files:
     - ../../vars/{{ inventory_dir | split('/') | last }}/vars.yml
