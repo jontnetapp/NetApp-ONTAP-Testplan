@@ -34,28 +34,20 @@
   pre_tasks:
 
   tasks:
-    - name: Create S3-NFS bucket
+    - name: Create S3 NAS bucket
       netapp.ontap.na_ontap_s3_buckets:
         state: present
-        name: "nfsvol"
+        name: "{{ ontap_34_bucket_name }}"
         type: nas
-        nas_path: "/{{ ontap_31_vol_name }}"
+        nas_path: "/{{ ontap_34_fg_name }}"
         vserver: "{{ global_primary_nas_svm }}"
         
     - name: Create S3-UNIX name mapping configuration
       netapp.ontap.na_ontap_name_mappings:
         direction: s3_unix
         index: 1
-        pattern: "{{ ontap_33_s3_user_name }}"
+        pattern: "{{ ontap_34_s3_user_name }}"
         replacement: "root"
-        vserver: "{{ global_primary_nas_svm }}"
-
-    - name: Create S3-SMB bucket
-      netapp.ontap.na_ontap_s3_buckets:
-        state: present
-        name: "winvol"
-        type: nas
-        nas_path: "/{{ ontap_32_vol_name }}"
         vserver: "{{ global_primary_nas_svm }}"
 
     - set_fact: 
@@ -68,7 +60,7 @@
       netapp.ontap.na_ontap_name_mappings:
         direction: s3_win
         index: 2
-        pattern: "{{ ontap_33_s3_user_name }}"
+        pattern: "{{ ontap_34_s3_user_name }}"
         ### TODO - mapping not working properly
         replacement: "{{ admin_user }}"
         vserver: "{{ global_primary_nas_svm }}"
