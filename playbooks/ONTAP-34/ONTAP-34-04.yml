@@ -23,7 +23,6 @@
     - ../../vars/{{ inventory_dir | split('/') | last }}/vault.yml
   collections:
     - netapp.ontap
-    - community.windows
   module_defaults:
     group/netapp.ontap.netapp_ontap:
       hostname:                        "{{ ansible_host }}"
@@ -79,6 +78,21 @@
       loop:
         "{{ ontap_34_fg_ntfs_qtree_names + ontap_34_fg_ntfs_qtree_names + ontap_34_fg_mixed_qtree_names}}"
 
+  post_tasks:
+  
+- hosts:                               "windows_hosts"
+  name:                                "ONTAP-32-06 - Mount & Write (FlexGroup)"
+  gather_facts:                        false
+  vars_files:
+    - ../../vars/{{ inventory_dir | split('/') | last }}/vars.yml
+    - ../../vars/{{ inventory_dir | split('/') | last }}/vault.yml
+  collections:
+    - ansible.windows
+    - community.windows
+
+  pre_tasks:
+
+  tasks:
     - name: Create mount directory
       ansible.windows.win_file:
         path:                          "{{ windows_34_mount_dir }}"
