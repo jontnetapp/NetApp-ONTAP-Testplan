@@ -1,6 +1,6 @@
 ################################################################################
 #
-# Title:        ONTAP-34-08 - Create S3-NAS user mapping
+# Title:        ONTAP-34-08 - Create S3 NAS user mapping
 # Author:       NetApp Inc. (jont)
 # Initial
 # Create Date:  2025-04-28
@@ -15,7 +15,7 @@
 ################################################################################
 
 - hosts:                               "primary_storage_clusters"
-  name:                                "ONTAP-34-05 - Create S3-NAS user mapping"
+  name:                                "ONTAP-34-08 - Create S3 NAS user mapping"
   gather_facts:                        false
   vars_files:
     - ../../vars/{{ inventory_dir | split('/') | last }}/vars.yml
