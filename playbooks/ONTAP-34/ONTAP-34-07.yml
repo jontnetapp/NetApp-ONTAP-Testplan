@@ -58,3 +58,67 @@
           - name: "{{ ontap_34_s3_group_policy }}"
 
   post_tasks:
+
+- hosts:                               "linux_hosts"
+  name:                                "ONTAP-34-07 - User and Group - Linux"
+  gather_facts:                        false
+  vars_files:
+    - ../../vars/{{ inventory_dir | split('/') | last }}/vars.yml
+    - ../../vars/{{ inventory_dir | split('/') | last }}/vault.yml
+  collections:
+    - ansible.windows
+    - community.windows
+
+  pre_tasks:
+
+  tasks:
+    - name: Create directory for S3 credentials
+      ansible.builtin.file:
+        state:                         directory
+        path:                          "{{ linux_default_mount_dir }}/.s3_credentials/"
+
+    - name: Create files
+      ansible.builtin.copy:
+        content:                       "{{ hostvars[item].s3_users | to_nice_json }}"
+        dest:                          "{{ linux_default_mount_dir }}/.s3_credentials/{{ item }}.json"
+      loop:
+        "{{ groups['ontap'] }}"
+
+  post_tasks:
+
+
+- hosts:                               "windows_hosts"
+  name:                                "ONTAP-34-07 - User and Group - Windows"
+  gather_facts:                        false
+  vars_files:
+    - ../../vars/{{ inventory_dir | split('/') | last }}/vars.yml
+    - ../../vars/{{ inventory_dir | split('/') | last }}/vault.yml
+  collections:
+    - ansible.windows
+    - community.windows
+
+  pre_tasks:
+
+  tasks:
+    - name: Create directory for S3 credentials
+      ansible.windows.win_file:
+        path:                          "{{ windows_default_mount_dir }}\\s3_credentials"
+        state:                         directory
+
+    - name: Remove existing credential files
+      ansible.windows.win_file:
+        state:                         absent
+        path:                          "{{ windows_default_mount_dir }}\\s3_credentials\\{{ item }}.txt"
+      loop:
+        "{{ groups['ontap'] }}"
+
+    - name: Write credentials to files
+      community.windows.win_lineinfile:
+        state:                         present
+        path:                          "{{ windows_default_mount_dir }}\\s3_credentials\\{{ item }}.txt"
+        create:                        true
+        line:                          "{{ hostvars[item].s3_users | to_nice_json }}"
+      loop:
+        "{{ groups['ontap'] }}"
+        
+  post_tasks:
