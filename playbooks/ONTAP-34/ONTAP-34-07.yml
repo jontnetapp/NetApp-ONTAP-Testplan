@@ -52,7 +52,11 @@
     - name: Debug information about the S3 user
       debug:
         var: s3_user
-          
+
+    - name: Debug the s3_users dictionary
+      debug:
+        var: s3_users
+        
     - name: Create S3 groups
       netapp.ontap.na_ontap_s3_groups:
         state: present
@@ -78,6 +82,14 @@
   pre_tasks:
 
   tasks:
+    - name: Debug the global_primary_nas_svm variable
+      debug:
+        var: global_primary_nas_svm
+
+    - name: Debug the s3_users dictionary from hostvars
+      debug:
+        var: hostvars[global_primary_nas_svm].s3_users
+        
     - name: Create directory for S3 credentials
       ansible.builtin.file:
         state:                         directory
