@@ -43,14 +43,14 @@
         regenerate_keys:               true
       register: s3_user
 
-  - name: Append user information to dictionary
-    ansible.builtin.set_fact:
-      s3_users: "{{ s3_users | combine({global_primary_nas_svm: s3_user}) }}"
+    - name: Append user information to dictionary
+      ansible.builtin.set_fact:
+        s3_users: "{{ s3_users | combine({global_primary_nas_svm: s3_user}) }}"
 
-  - name: Debug information about the S3 user
-    debug:
-      var: s3_user
-        
+    - name: Debug information about the S3 user
+      debug:
+        var: s3_user
+          
     - name: Create S3 groups
       netapp.ontap.na_ontap_s3_groups:
         state: present
