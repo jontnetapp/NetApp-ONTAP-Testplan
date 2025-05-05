@@ -85,7 +85,7 @@
 
     - name: Create files
       ansible.builtin.copy:
-        content:                       "{{ hostvars[item].s3_users | to_nice_json }}"
+        content:                       "{{ hostvars[global_primary_nas_svm].s3_users | to_nice_json }}"
         dest:                          "{{ linux_default_mount_dir }}/.s3_credentials/{{ item }}.json"
       loop:
         "{{ groups['ontap'] }}"
@@ -123,7 +123,7 @@
         state:                         present
         path:                          "{{ windows_default_mount_dir }}\\s3_credentials\\{{ item }}.txt"
         create:                        true
-        line:                          "{{ hostvars[item].s3_users | to_nice_json }}"
+        line:                          "{{ hostvars[global_primary_nas_svm].s3_users | to_nice_json }}"
       loop:
         "{{ groups['ontap'] }}"
         
