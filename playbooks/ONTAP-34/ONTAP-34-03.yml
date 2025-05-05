@@ -1,16 +1,16 @@
 ################################################################################
 #
-# Title:        ONTAP-34-03 - NFS Mount & Write
+# Title:        ONTAP-34-04 - NFS Mount & Write (Multiprotocol)
 # Author:       NetApp Inc. (jont)
 # Initial 
 # Create Date:  2025-04-29
 # Description:  NFS
-#               - Mount & Write (Multiprotocol FlexGroup)
+#               - Mount & Write (Multiprotocol)
 # 
 ################################################################################
 
 - hosts:                               "linux"
-  name:                                ONTAP-34-03 - NFS Mount & Write
+  name:                                ONTAP-34-04 - NFS Mount & Write (Multiprotocol)
   gather_facts:                        false
   vars_files:
     - ../../vars/{{ inventory_dir | split('/') | last }}/vars.yml
