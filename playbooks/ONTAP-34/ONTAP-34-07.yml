@@ -20,6 +20,8 @@
   vars_files:
     - ../../vars/{{ inventory_dir | split('/') | last }}/vars.yml
     - ../../vars/{{ inventory_dir | split('/') | last }}/vault.yml
+  vars:
+    s3_users: {}
   collections:
     - netapp.ontap
   module_defaults:
