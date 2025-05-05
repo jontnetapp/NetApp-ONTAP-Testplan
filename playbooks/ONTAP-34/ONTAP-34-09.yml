@@ -1,10 +1,10 @@
 ################################################################################
 #
-# Title:        ONTAP-34-05 - Create S3 user, group, and NAS bucket
+# Title:        ONTAP-34-09 - Create S3 NAS bucket
 # Author:       NetApp Inc. (jont)
 # Initial
 # Create Date:  2025-04-28
-# Description:  Create S3 NAS Buckets
+# Description:  Create S3 NAS Bucket
 #
 # URLs:         https://docs.netapp.com/us-en/ontap/index.html
 #               https://galaxy.ansible.com/netapp/ontap
@@ -15,7 +15,7 @@
 ################################################################################
 
 - hosts:                               "primary_storage_clusters"
-  name:                                "ONTAP-34-95 - Create S3 NAS bucket"
+  name:                                "ONTAP-34-09 - Create S3 NAS bucket"
   gather_facts:                        false
   vars_files:
     - ../../vars/{{ inventory_dir | split('/') | last }}/vars.yml
