@@ -3,7 +3,7 @@
 # Title:        ONTAP-34-07 - Create S3 user and group
 # Author:       NetApp Inc. (jont)
 # Initial
-# Create Date:  2025-04-28
+# Create Date:  2025-05-05
 # Description:  Create S3 user and group
 #
 # URLs:         https://docs.netapp.com/us-en/ontap/index.html
@@ -37,15 +37,19 @@
 
     - name: Create or regenerate the S3 user
       netapp.ontap.na_ontap_s3_users:
-        state: present
-        name: "{{ ontap_34_s3_user_name }}"
-        vserver: "{{ global_primary_nas_svm }}"
-        regenerate_keys: true
+        state:                         present
+        name:                          "{{ ontap_34_s3_user_name }}"
+        vserver:                       "{{ global_primary_nas_svm }}"
+        regenerate_keys:               true
       register: s3_user
-  
-    - name: Debug information about the S3 user
-      debug:
-        var: s3_user
+
+  - name: Append user information to dictionary
+    ansible.builtin.set_fact:
+      s3_users: "{{ s3_users | combine({global_primary_nas_svm: s3_user}) }}"
+
+  - name: Debug information about the S3 user
+    debug:
+      var: s3_user
         
     - name: Create S3 groups
       netapp.ontap.na_ontap_s3_groups:
