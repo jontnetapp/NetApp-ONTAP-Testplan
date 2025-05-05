@@ -15,7 +15,7 @@
 ################################################################################
 
 - hosts:                               "primary_storage_clusters"
-  name:                                "ONTAP-34-05 - Create S3 user and group"
+  name:                                "ONTAP-34-07 - Create S3 user and group"
   gather_facts:                        false
   vars_files:
     - ../../vars/{{ inventory_dir | split('/') | last }}/vars.yml
