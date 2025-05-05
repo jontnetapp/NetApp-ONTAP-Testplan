@@ -35,13 +35,13 @@
   pre_tasks:
 
   tasks:
-    - name: Remove S3 buckets
-      netapp.ontap.na_ontap_s3_buckets:
-        state: absent
-        name: "{{ ontap_34_s3_bucket_name }}"
-        type: nas
-        nas_path: "/{{ ontap_34_fg_name }}"
-        vserver: "{{ global_primary_nas_svm }}"
+#    - name: Remove S3 buckets
+#      netapp.ontap.na_ontap_s3_buckets:
+#        state: absent
+#        name: "{{ ontap_34_s3_bucket_name }}"
+#        type: nas
+#        nas_path: "/{{ ontap_34_fg_name }}"
+#        vserver: "{{ global_primary_nas_svm }}"
 
     - name: Remove S3 users
       netapp.ontap.na_ontap_s3_users:
@@ -95,6 +95,11 @@
         ansible_become_user:           "{{ ansible_user }}"
         ansible_become_pass:           "{{ ansible_password }}"
 
+    - name: Remove credentials directory
+      ansible.windows.win_file:
+        path:                          "{{ windows_default_mount_dir }}/s3_credentials/"
+        state:                         absent
+        
     - name: Remove mount directory
       ansible.windows.win_file:
         path:                          "{{ windows_34_mount_dir }}"
