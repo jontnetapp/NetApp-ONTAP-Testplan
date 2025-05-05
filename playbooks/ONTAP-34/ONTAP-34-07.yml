@@ -78,12 +78,7 @@
 
   pre_tasks:
 
-  tasks:
-
-    - name: Debug the global_s3_user dictionary from hostvars
-      debug:
-        var: hostvars[global_primary_nas_svm].global_s3_user
-        
+  tasks:        
     - name: Create directory for S3 credentials
       ansible.builtin.file:
         state:                         directory
