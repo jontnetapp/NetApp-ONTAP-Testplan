@@ -1,0 +1,75 @@
+################################################################################
+#
+# Title:        ONTAP-33-03 - Create Second S3 Bucket with Snapshot Policy
+# Author:       NetApp Inc. (jont)
+# Initial
+# Create Date:  2025-05-06
+# Description:  Create an S3 Bucket
+#
+# URLs:         https://docs.netapp.com/us-en/ontap/index.html
+#               https://galaxy.ansible.com/netapp/ontap
+#
+# Built-in help:
+# ansible-doc netapp.ontap.<module_name>
+#
+################################################################################
+
+- hosts:                               "primary_storage_clusters"
+  name:                                "ONTAP-33-03 - Create Second S3 Bucket"
+  gather_facts:                        false
+  vars_files:
+    - ../../vars/{{ inventory_dir | split('/') | last }}/vars.yml
+    - ../../vars/{{ inventory_dir | split('/') | last }}/vault.yml
+  collections:
+    - netapp.ontap
+  module_defaults:
+    group/netapp.ontap.netapp_ontap:
+      hostname:                        "{{ ansible_host }}"
+      username:                        "{{ ontap_admin_user }}"
+      password:                        "{{ ontap_admin_password }}"
+      https:                           true
+      validate_certs:                  false
+      use_rest:                        "always"
+
+  pre_tasks:
+
+  tasks:
+    - name: Create S3 bucket
+      netapp.ontap.na_ontap_s3_buckets:
+        state:                             present
+        name:                              "{{ ontap_33_s3_2nd_bucket_name }}"
+        size:                              "{{ ontap_33_s3_2nd_bucket_size }}"
+        vserver:                           "{{ global_primary_nas_svm }}"
+
+    - name: Get SVM UUID
+      netapp.ontap.na_ontap_restit:
+        api:                               /svm/svms
+        method:                            GET
+        query:
+          name:                            "{{ global_primary_nas_svm }}"
+      register: svm
+
+    - name: debug
+      debug:
+        var: svm
+        
+    - name: Get S3 bucket UUID
+      netapp.ontap.na_ontap_restit:
+        api:                               /protocols/s3/buckets
+        method:                            GET
+        query:
+          name:                            "{{ ontap_33_s3_2nd_bucket_name }}"
+      register: bucket
+      
+    - name: debug
+      debug:
+        var: bucket
+          
+#    - name: Patch S3 bucket snapshot policy
+#      netapp.ontap.na_ontap_restit:
+
+#    - name: Take S3 bucket snapshot
+#      netapp.ontap.na_ontap_restit:
+
+  post_tasks:
+  
