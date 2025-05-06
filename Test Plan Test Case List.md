@@ -47,6 +47,7 @@
 | 34-07 | Multiprotocol NAS                 | S3 User and Group                     |
 | 34-08 | Multiprotocol NAS                 | S3 Name Mapping                       |
 | 34-09 | Multiprotocol NAS                 | S3 Bucket                             |
+| 34-10 | Multiprotocol NAS                 | Objects                               |
 | 35-01 | iSCSI	                            | iGroups                               |
 | 35-02 | iSCSI	                            | Volumes                               |
 | 35-03 | iSCSI	                            | LUNs & Mappings                       |
