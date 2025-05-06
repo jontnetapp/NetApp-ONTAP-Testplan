@@ -34,24 +34,21 @@
   pre_tasks:
 
   tasks:
+    - name: Create Snapshot policy
+      netapp.ontap.na_ontap_snapshot_policy:
+        state:                             present
+        name:                              "{{ ontap_33_s3_2nd_bucket_name }}_policy"
+        schedule:                          "5min"
+        prefix:                            "minutes"
+        count:                             20
+        enabled:                           true
+    
     - name: Create S3 bucket
       netapp.ontap.na_ontap_s3_buckets:
         state:                             present
         name:                              "{{ ontap_33_s3_2nd_bucket_name }}"
         size:                              "{{ ontap_33_s3_2nd_bucket_size }}"
         vserver:                           "{{ global_primary_nas_svm }}"
-
-    - name: Get SVM UUID
-      netapp.ontap.na_ontap_restit:
-        api:                               /svm/svms
-        method:                            GET
-        query:
-          name:                            "{{ global_primary_nas_svm }}"
-      register: svm
-
-    - name: debug
-      debug:
-        var: svm
         
     - name: Get S3 bucket UUID
       netapp.ontap.na_ontap_restit:
@@ -65,8 +62,12 @@
       debug:
         var: bucket
           
-#    - name: Patch S3 bucket snapshot policy
-#      netapp.ontap.na_ontap_restit:
+    - name: Patch S3 bucket snapshot policy
+      netapp.ontap.na_ontap_restit:
+        api:                               "/protocols/s3/buckets/{{ bucket.response.records[0].svm.uuid }}/{{ bucket.response.records[0].uuid }}"
+        method:                            PATCH
+        body:
+          snapshot_policy:                 "{{ ontap_33_s3_2nd_bucket_name }}_policy"
 
 #    - name: Take S3 bucket snapshot
 #      netapp.ontap.na_ontap_restit:
