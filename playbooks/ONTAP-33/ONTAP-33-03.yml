@@ -39,7 +39,6 @@
         state:                             present
         name:                              "{{ ontap_33_s3_2nd_bucket_name }}_policy"
         schedule:                          "5min"
-        prefix:                            "minutes"
         count:                             20
         enabled:                           true
     
