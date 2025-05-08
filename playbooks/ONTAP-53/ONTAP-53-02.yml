@@ -35,6 +35,19 @@
   pre_tasks:
 
   tasks:
+      - name: Remove snapmirror object store configuration on the SVMs
+      netapp.ontap.na_ontap_rest_cli:
+        command: snapmirror/object-store/config
+        verb: DELETE
+        params:
+          vserver: "{{ item.svm.name }}"
+          object-store-name: "*"
+      ignore_errors: yes
+      loop:
+         "{{ protocols_s3_services }}"
+      loop_control:
+        label: "{{ item.svm.name }}"
+        
     - name: Regenerate S3 root user access token
       netapp.ontap.na_ontap_s3_users:
         state: present
@@ -200,6 +213,10 @@
         policy: "{{ ontap_53_policy_name }}"
         type: "continuous"
         rpo: "{{ ontap_53_policy_rpo }}"
+    register: snapmirror_policy_result
+    failed_when:
+      - snapmirror_policy_result.failed
+      - "'Reason: A policy with this name already exists.' not in snapmirror_policy_result.msg"
       
   - name: Create SnapMirror S3 relationship
     netapp.ontap.na_ontap_rest_cli:
