@@ -35,7 +35,7 @@
   pre_tasks:
 
   tasks:
-      - name: Remove snapmirror object store configuration on the SVMs
+    - name: Remove snapmirror object store configuration on the SVMs
       netapp.ontap.na_ontap_rest_cli:
         command: snapmirror/object-store/config
         verb: DELETE
